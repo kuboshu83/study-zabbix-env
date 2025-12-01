@@ -38,5 +38,13 @@ services:
     networks:
       - zabbix-nw
 
+  zabbix-server-agent:
+    image: zabbix/zabbix-agent:ubuntu-7.4-latest
+    environment:
+      - ZBX_HOSTNAME=zabbix-server
+      - ZBX_SERVER_HOST=zabbix-server
+    networks:
+      - zabbix-nw
+
 networks:
   zabbix-nw:
