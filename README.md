@@ -23,6 +23,17 @@ Password: zabbix
 podman compose down
 ```
 
+# 初回起動時の設定
+
+## Zabbixサーバー監視用のエージェント設定
+
+Zabbixサーバーにはエージェントがインストールされていません。
+そのため初回起動時には、存在しないエージェント経由でサーバーの状態を取得しようとして失敗します。
+
+そこで、Zabbixサーバー情報取得をサーバー上のエージェント経由ではなく、composeで起動したエージェント経由で行うように設定します。
+
+![set-zabbix-server-agent](./docs/figures/set-zabbix-server-agent.png)
+
 
 # 参考
 
@@ -30,3 +41,4 @@ podman compose down
 - [Zabbixサーバー(PostgreSQL)のコンテナイメージ](https://hub.docker.com/r/zabbix/zabbix-server-pgsql)
 - [Zabbixインターフェース(nginx)のコンテナイメージ](https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql/)
 - [PostgreSQLのコンテナイメージ](https://hub.docker.com/_/postgres)
+- [Zabbixエージェントのコンテナイメージ](https://hub.docker.com/r/zabbix/zabbix-agent/)
