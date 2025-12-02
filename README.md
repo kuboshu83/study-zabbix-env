@@ -34,6 +34,66 @@ Zabbixサーバーにはエージェントがインストールされていま�
 
 ![set-zabbix-server-agent](./docs/figures/set-zabbix-server-agent.png)
 
+# エージェントを使った監視
+
+zabbix-targetというコンテナにzabbix-agentをインストールしているので、
+zabbix-targetの情報をzabbix-agent経由で取得してみます。
+
+以降の設定は、zabbix-targetコンテナ内で行います。
+
+## 設定の変更
+
+/etc/zabbix/zabbix_agentd.confを修正します。
+今回は、エージェントで最低限の実験をするための設定だけを行います。
+
+まずは、エージェントと通信するZabbixサーバの設定を行います。
+最初に以下の２箇所を修正して、Zabbixサーバーのコンテナに書き換えます。
+
+![zabbix-agent-conf](./docs/figures/zabbix-agent-conf.png)
+
+変更した結果は以下の通りです。
+
+```text
+Server=zabbix-server
+ServerActive=zabbix-server
+```
+
+続いて、Zabbixエージェントが監視対象ホストに対してsystem.run[]で実行できるコマンドを設定します。
+今回は実験なので、すべてのコマンドを実行できるようにします。
+以下の記述の下に一行追加してください。
+
+![zabbix-agent-conf-allowkey](./docs/figures/zabbix-agent-conf-allowkey.png)
+
+追加する行は以下の通りです
+
+```text
+AllowKey=system.run[*]
+```
+
+もし、zabbix-agentが起動中の場合は、再起動して設定を反映させてください。
+
+```bash
+service zabbix-agent restart
+```
+
+
+## zabbix-agentの起動
+
+zabbix-targetコンテナにアクセスして、以下のコマンドでzabbix-agentを起動します。
+
+```bash
+service zabbix-agent start
+```
+
+## ホストの作成とアイテムの作成
+
+### ホストの作成
+
+![create-zabbix-target-host](./docs/figures/create-zabbix-target-host.png)
+
+### 監視項目の作成
+
+![create-item](./docs/figures/create-item.png)
 
 # 参考
 
