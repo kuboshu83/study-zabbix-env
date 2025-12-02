@@ -46,5 +46,16 @@ services:
     networks:
       - zabbix-nw
 
+  zabbix-target:
+    build: 
+      context: ./ubuntu-target
+      dockerfile: Dockerfile
+    image: localhost/zabbix-target-ubuntu:24.04
+    expose:
+      - "10050"
+    tty: true
+    networks:
+      - zabbix-nw
+
 networks:
   zabbix-nw:
