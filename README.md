@@ -39,61 +39,27 @@ Zabbixサーバーにはエージェントがインストールされていま�
 zabbix-targetというコンテナにzabbix-agentをインストールしているので、
 zabbix-targetの情報をzabbix-agent経由で取得してみます。
 
-以降の設定は、zabbix-targetコンテナ内で行います。
-
-## 設定の変更
-
-/etc/zabbix/zabbix_agentd.confを修正します。
-今回は、エージェントで最低限の実験をするための設定だけを行います。
-
-まずは、エージェントと通信するZabbixサーバの設定を行います。
-最初に以下の２箇所を修正して、Zabbixサーバーのコンテナに書き換えます。
-
-![zabbix-agent-conf](./docs/figures/zabbix-agent-conf.png)
-
-変更した結果は以下の通りです。
-
-```text
-Server=zabbix-server
-ServerActive=zabbix-server
-```
-
-続いて、Zabbixエージェントが監視対象ホストに対してsystem.run[]で実行できるコマンドを設定します。
-今回は実験なので、すべてのコマンドを実行できるようにします。
-以下の記述の下に一行追加してください。
-
-![zabbix-agent-conf-allowkey](./docs/figures/zabbix-agent-conf-allowkey.png)
-
-追加する行は以下の通りです
-
-```text
-AllowKey=system.run[*]
-```
-
-もし、zabbix-agentが起動中の場合は、再起動して設定を反映させてください。
-
-```bash
-service zabbix-agent restart
-```
-
-
-## zabbix-agentの起動
-
-zabbix-targetコンテナにアクセスして、以下のコマンドでzabbix-agentを起動します。
-
-```bash
-service zabbix-agent start
-```
-
 ## ホストの作成とアイテムの作成
+
+ZabbixのWeb画面から設定を行います。
 
 ### ホストの作成
 
 ![create-zabbix-target-host](./docs/figures/create-zabbix-target-host.png)
 
+ホストはいわゆる実在するホストのことではなく、Zabbixサーバが監視対象につける任意の名前です。
+実施にどこからデータを取得するかは、インターフェース部分で設定します。
+
+インターフェースは複数設定することができ、監視項目ごとにインターフェースを切り替えることで、
+異なる場所から様々なデータを取得することができます。
+このようなことから、ホストはZabbixが複数の監視項目に対してつけるグループ名のようなイメージになると思います。
+
 ### 監視項目の作成
 
 ![create-item](./docs/figures/create-item.png)
+
+上で作成したホストで監視する項目を設定します。１つのホストに対して複数の監視項目を設定することができ、
+監視データを取得する場所をホストインターフェースの部分で選択することができます。
 
 # 参考
 
@@ -102,3 +68,4 @@ service zabbix-agent start
 - [Zabbixインターフェース(nginx)のコンテナイメージ](https://hub.docker.com/r/zabbix/zabbix-web-nginx-pgsql/)
 - [PostgreSQLのコンテナイメージ](https://hub.docker.com/_/postgres)
 - [Zabbixエージェントのコンテナイメージ](https://hub.docker.com/r/zabbix/zabbix-agent/)
+- [ZabbixのDocker Composeのリポジトリ](https://github.com/zabbix/zabbix-docker)
