@@ -4,6 +4,7 @@ WORKDIR /root
 
 USER root
 
+COPY entrypoint.sh /entrypoint.sh
 RUN apt update && \
     apt install -y wget && \
     wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu24.04_all.deb && \
@@ -15,4 +16,7 @@ RUN apt update && \
         -e 's/^ServerActive=127.0.0.1$/ServerActive=zabbix-server/' \
         -e 's/^Hostname=Zabbix server$/Hostname=Ubuntu Zabbix target/' \
         -e '74i AllowKey=system.run[*]' \
-        /etc/zabbix/zabbix_agentd.conf 
+        /etc/zabbix/zabbix_agentd.conf  && \
+    chmod u+x /entrypoint.sh
+    
+ENTRYPOINT [ "/entrypoint.sh" ]
